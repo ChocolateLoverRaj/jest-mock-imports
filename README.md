@@ -27,7 +27,7 @@ npm i -D jest jest-mock-imports
     - \_\_mocks\_\_
       - tool.js
     - tool.js
-- [jest.config.js](#jest.configjs)
+- [jest.config.js](#jestconfigjs)
 - [transformer.cjs](#transformercjs)
 
 In this example file structure, there are a couple of files and modules being mocked.
