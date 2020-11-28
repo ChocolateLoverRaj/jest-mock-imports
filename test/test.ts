@@ -2,14 +2,14 @@
 import { mock, Options } from '../lib/index'
 import { strictEqual } from 'assert'
 
-type TestOptions = {
+interface TestOptions {
   modules?: Map<string, string>
   files?: Set<string>
 }
 
 function testPath (options: TestOptions, path: string, expect: string, file?: string): void
 function testPath (path: string, expect: string, file?: string): void
-function testPath (arg1: TestOptions | string, arg2: string, arg3: string, arg4?: string) {
+function testPath (arg1: TestOptions | string, arg2: string, arg3: string, arg4?: string): void {
   let options: Options = {
     modules: new Map<string, string>(),
     files: new Set<string>(),

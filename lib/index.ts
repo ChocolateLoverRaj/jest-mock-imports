@@ -7,7 +7,7 @@ type Transformer = (path: string) => string
 // Transform import paths, giving a transformer
 function transformPlugin (transformer: Transformer): PluginObj {
   // Changes the string literal, preserving quote style
-  function transform (source: StringLiteral, value: string) {
+  function transform (source: StringLiteral, value: string): void {
     const double = (source.extra.raw as string).startsWith('"')
     const quote = double ? '"' : '\''
     source.extra.raw = `${quote}${value}${quote}`
@@ -35,7 +35,7 @@ export interface Options {
 
 // path.relative does not always match the javascript import path syntax. It doesn't use ./
 // For example, relative('dir', 'dir/lib.js') => 'lib.js', but we want './lib.js'
-function trueRelative (path: string) {
+function trueRelative (path: string): string {
   return path.startsWith('.')
     ? path
     : './' + path
