@@ -1,0 +1,11 @@
+# Node Modules
+node_modules
+
+# Testing
+test/
+
+# Vscode
+.vscode/
+
+# GitHub
+.github/
