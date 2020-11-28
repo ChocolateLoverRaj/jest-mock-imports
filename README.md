@@ -27,8 +27,8 @@ npm i -D jest jest-mock-imports
     - \_\_mocks\_\_
       - tool.js
     - tool.js
-- [jest.config.js](#jest.config.js)
-- [transformer.cjs](#transformer.cjs)
+- [jest.config.js](#jest.configjs)
+- [transformer.cjs](#transformercjs)
 
 In this example file structure, there are a couple of files and modules being mocked.
 
@@ -66,7 +66,7 @@ import prime from './not-mocked.js'
 ```
 
 ### jest.config.js
-This tells jest to transform all files ending with `.js` files using the [transformer](#transformer.cjs).
+This tells jest to transform all files ending with `.js` files using the [transformer](#transformercjs).
 ```javascript
 export default {
   transform: {
