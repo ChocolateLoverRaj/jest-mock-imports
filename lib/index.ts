@@ -1,29 +1,44 @@
 import { dirname, basename, join, relative } from 'path'
 import { transformSync, PluginObj } from '@babel/core'
+import { StringLiteral } from '@babel/types'
 
 type Transformer = (path: string) => string
 
 // Transform import paths, giving a transformer
 function transformPlugin (transformer: Transformer): PluginObj {
+  // Changes the string literal, preserving quote style
+  function transform (source: StringLiteral, value: string) {
+    const double = (source.extra.raw as string).startsWith('"')
+    const quote = double ? '"' : '\''
+    source.extra.raw = `${quote}${value}${quote}`
+  }
   return {
     visitor: {
       ImportDeclaration (path) {
-        path.node.source.value = transformer(path.node.source.value)
+        transform(path.node.source, transformer(path.node.source.value))
       },
       ExportNamedDeclaration (path) {
-        path.node.source.value = transformer(path.node.source.value)
+        transform(path.node.source, transformer(path.node.source.value))
       },
       ExportAllDeclaration (path) {
-        path.node.source.value = transformer(path.node.source.value)
+        transform(path.node.source, transformer(path.node.source.value))
       }
     }
   }
 }
 
-interface Options {
+export interface Options {
   modules: Map<string, string>
   files: Set<string>
   rootDir?: string
+}
+
+// path.relative does not always match the javascript import path syntax. It doesn't use ./
+// For example, relative('dir', 'dir/lib.js') => 'lib.js', but we want './lib.js'
+function trueRelative (path: string) {
+  return path.startsWith('.')
+    ? path
+    : './' + path
 }
 
 // Mock modules and change import paths
@@ -45,7 +60,7 @@ export function mock (options: Options): (src: string, file: string) => string {
       // Check for module mocks
       if (options.modules.has(path)) {
         const mockPath = join(rootDir, '__mocks__', options.modules.get(path))
-        return relative(fileDir, mockPath)
+        return trueRelative(relative(fileDir, mockPath))
       }
       // Do not change anything if a non mocked module is being imported
       if (!path.startsWith('.')) {
@@ -57,7 +72,8 @@ export function mock (options: Options): (src: string, file: string) => string {
       if (mockFiles.has(importFile)) {
         // Path to mocked file
         const mockPath = join(dirname(importFile), '__mocks__', basename(importFile))
-        return relative(fileDir, mockPath)
+        // The relative path
+        return trueRelative(relative(fileDir, mockPath))
       }
       // If the file isn't being mocked, do not modify path
       return path
