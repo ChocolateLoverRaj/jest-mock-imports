@@ -1,4 +1,4 @@
-import { dirname, basename, join, relative, normalize } from 'path'
+import { dirname, basename, join, relative } from 'path'
 import { transformSync, PluginObj } from '@babel/core'
 import { StringLiteral } from '@babel/types'
 
