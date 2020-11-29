@@ -1,6 +1,6 @@
 import { dirname, basename, join, relative } from 'path'
 import { transformSync, PluginObj } from '@babel/core'
-import { StringLiteral } from '@babel/types'
+import { StringLiteral, ExportNamedDeclaration } from '@babel/types'
 
 type Transformer = (path: string) => string
 
@@ -19,7 +19,8 @@ function transformPlugin (transformer: Transformer): PluginObj {
         transform(path.node.source)
       },
       ExportNamedDeclaration (path) {
-        if (path.node.source) {
+        const hasSource: boolean = Object.prototype.hasOwnProperty.call((path.node as ExportNamedDeclaration | unknown), 'source')
+        if (hasSource) {
           transform(path.node.source)
         }
       },
