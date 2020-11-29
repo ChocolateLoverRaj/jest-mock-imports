@@ -8,7 +8,7 @@
     "test": "mocha",
     "lint": "ts-standard",
     "build": "tsc",
-    "prepublish": "npm run build && npm run lint && npm run test"
+    "prepublishOnly": "npm run build && npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
