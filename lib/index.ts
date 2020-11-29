@@ -19,7 +19,9 @@ function transformPlugin (transformer: Transformer): PluginObj {
         transform(path.node.source)
       },
       ExportNamedDeclaration (path) {
-        transform(path.node.source)
+        if (path.node.source) {
+          transform(path.node.source)
+        }
       },
       ExportAllDeclaration (path) {
         transform(path.node.source)

@@ -73,3 +73,11 @@ it('mock file', () => {
   testPath(options, './dir/util.js', './dir/__mocks__/util.js', 'lib/index.js')
   testPath(options, '../util.js', '../__mocks__/util.js', 'lib/dir/util.js')
 })
+
+it('ignore export named', () => {
+  const mocker = mock({
+    modules: new Map<string, string>(),
+    files: new Set<string>()
+  })
+  strictEqual(mocker('export const name = \'Bob\';', 'lib.js'), 'export const name = \'Bob\';')
+})
