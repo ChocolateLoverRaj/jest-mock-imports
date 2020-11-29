@@ -7,7 +7,8 @@ type Transformer = (path: string) => string
 // Transform import paths, giving a transformer
 function transformPlugin (transformer: Transformer): PluginObj {
   // Changes the string literal, preserving quote style
-  function transform (source: StringLiteral, value: string): void {
+  function transform (source: StringLiteral): void {
+    const value = transformer(source.value)
     const double = (source.extra.raw as string).startsWith('"')
     const quote = double ? '"' : '\''
     source.extra.raw = `${quote}${value}${quote}`
@@ -15,13 +16,13 @@ function transformPlugin (transformer: Transformer): PluginObj {
   return {
     visitor: {
       ImportDeclaration (path) {
-        transform(path.node.source, transformer(path.node.source.value))
+        transform(path.node.source)
       },
       ExportNamedDeclaration (path) {
-        transform(path.node.source, transformer(path.node.source.value))
+        transform(path.node.source)
       },
       ExportAllDeclaration (path) {
-        transform(path.node.source, transformer(path.node.source.value))
+        transform(path.node.source)
       }
     }
   }
@@ -35,7 +36,9 @@ export interface Options {
 
 // path.relative does not always match the javascript import path syntax. It doesn't use ./
 // For example, relative('dir', 'dir/lib.js') => 'lib.js', but we want './lib.js'
-function trueRelative (path: string): string {
+// Also changes backslashes to forward slashes
+function fixRelative (path: string): string {
+  path = path.replace(/\\/g, '/')
   return path.startsWith('.')
     ? path
     : './' + path
@@ -60,7 +63,7 @@ export function mock (options: Options): (src: string, file: string) => string {
       // Check for module mocks
       if (options.modules.has(path)) {
         const mockPath = join(rootDir, '__mocks__', options.modules.get(path))
-        return trueRelative(relative(fileDir, mockPath))
+        return fixRelative(relative(fileDir, mockPath))
       }
       // Do not change anything if a non mocked module is being imported
       if (!path.startsWith('.')) {
@@ -73,7 +76,7 @@ export function mock (options: Options): (src: string, file: string) => string {
         // Path to mocked file
         const mockPath = join(dirname(importFile), '__mocks__', basename(importFile))
         // The relative path
-        return trueRelative(relative(fileDir, mockPath))
+        return fixRelative(relative(fileDir, mockPath))
       }
       // If the file isn't being mocked, do not modify path
       return path
