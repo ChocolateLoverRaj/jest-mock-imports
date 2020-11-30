@@ -1,6 +1,6 @@
 {
   "name": "jest-mock-imports",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Mock imports by changing the import path of ESModule files.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
