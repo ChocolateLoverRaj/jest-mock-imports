@@ -36,7 +36,8 @@ function testPath (arg1: TestOptions | string, arg2: string, arg3: string, arg4?
   const transforms: Array<(path: string) => string> = [
     path => `import '${path}';`,
     path => `export { default } from '${path}';`,
-    path => `export * as lib from '${path}';`
+    path => `export * as lib from '${path}';`,
+    path => `export * from '${path}';`
   ]
   for (const transform of transforms) {
     strictEqual(mocker(transform(path), file).replace(/\\/g, '/'), transform(expect.replace(/\\/g, '/')))
@@ -80,4 +81,12 @@ it('ignore export named', () => {
     files: new Set<string>()
   })
   strictEqual(mocker('export const name = \'Bob\';', 'lib.js'), 'export const name = \'Bob\';')
+})
+
+it('mock accesses real module', () => {
+  const options: TestOptions = {
+    modules: new Map<string, string>()
+      .set('chalk', 'chalk.js')
+  }
+  testPath(options, 'chalk', 'chalk', '__mocks__/chalk.js')
 })
