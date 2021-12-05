@@ -1,8 +1,8 @@
 # jest-mock-imports
-Mock imports by changing the import path of ESModule files.
+Mock imports by changing the import path of ESModule and CommonJS files.
 
 ## Why?
-This module is meant for mocking modules that are `import`ed by files. `jest.mock` is designed for mocking `require`, but it doesn't work for ESModules. This module is a jest transformer that changes the `import` paths of you files.
+This module is meant for mocking modules that are `import`ed by files. `jest.mock` is designed for mocking `require`, but it doesn't work for ESModules. It also doesn't do a good job mocking CommonJS files. This module is a jest transformer that changes the `import` and `require` paths of you files.
 
 ## Setup
 This module is meant to be used with `jest`.
