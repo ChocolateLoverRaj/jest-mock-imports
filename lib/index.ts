@@ -82,6 +82,8 @@ export function mock (options: Options): (src: string, file: string) => string {
         return path
       }
       // The absolute path of the file being imported
+      // Use .js extension by default
+      if (!path.endsWith('.js')) path += '.js'
       const importFile = join(fileDir, path)
       // Check if that file is being mocked
       if (mockFiles.has(importFile)) {
