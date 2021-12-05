@@ -90,3 +90,24 @@ it('mock accesses real module', () => {
   }
   testPath(options, 'chalk', 'chalk', '__mocks__/chalk.js')
 })
+
+it('require', () => {
+  const mocker = mock({
+    modules: new Map(),
+    files: new Set(['a.js']),
+    rootDir: '.'
+  })
+  strictEqual(mocker("require('./a.js');", 'b.js'), "require('./__mocks__/a.js');")
+})
+
+it('not a function named require', () => {
+  const mocker = mock({
+    modules: new Map(),
+    files: new Set(['a.js']),
+    rootDir: '.'
+  })
+  const str = `function require() {}
+
+require('./a.js');`
+  strictEqual(mocker(str, 'b.js'), str)
+})

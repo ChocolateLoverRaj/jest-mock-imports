@@ -1,6 +1,6 @@
 import { dirname, basename, join, relative } from 'path'
 import { transformSync, PluginObj } from '@babel/core'
-import { StringLiteral } from '@babel/types'
+import { StringLiteral, Identifier, isStringLiteral } from '@babel/types'
 
 type Transformer = (path: string) => string
 
@@ -25,6 +25,16 @@ function transformPlugin (transformer: Transformer): PluginObj {
       },
       ExportAllDeclaration (path) {
         transform(path.node.source)
+      },
+      CallExpression (path) {
+        if (
+          path.node.arguments.length === 1 &&
+          (path.node.callee as Identifier).name === 'require' &&
+          path.scope.getBindingIdentifier('require') === undefined) {
+          const [arg] = path.node.arguments
+          if (!isStringLiteral(arg)) return
+          transform(arg)
+        }
       }
     }
   }
