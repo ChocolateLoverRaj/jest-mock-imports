@@ -111,3 +111,9 @@ it('not a function named require', () => {
 require('./a.js');`
   strictEqual(mocker(str, 'b.js'), str)
 })
+
+it('implicit .js extension', () => {
+  testPath({
+    files: new Set(['util.js'])
+  }, './util', './__mocks__/util.js')
+})
